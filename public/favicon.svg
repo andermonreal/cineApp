@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <!-- Background circle -->
+  <circle cx="16" cy="16" r="16" fill="#4f6ef7"/>
+  <!-- Film strip body -->
+  <rect x="7" y="11" width="18" height="10" rx="1.5" fill="white"/>
+  <!-- Left holes -->
+  <rect x="8.5" y="12.5" width="2.5" height="2.5" rx="0.5" fill="#4f6ef7"/>
+  <rect x="8.5" y="17" width="2.5" height="2.5" rx="0.5" fill="#4f6ef7"/>
+  <!-- Center frame -->
+  <rect x="13" y="12.5" width="6" height="7" rx="0.5" fill="#4f6ef7"/>
+  <!-- Right holes -->
+  <rect x="21" y="12.5" width="2.5" height="2.5" rx="0.5" fill="#4f6ef7"/>
+  <rect x="21" y="17" width="2.5" height="2.5" rx="0.5" fill="#4f6ef7"/>
+  <!-- Play triangle inside center frame -->
+  <polygon points="14.5,14 14.5,18 18.5,16" fill="white"/>
+</svg>

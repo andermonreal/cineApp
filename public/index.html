@@ -1,21 +1,1591 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="%PUBLIC_URL%/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#4f6ef7" />
-    <meta name="description"
-        content="CineApp - Tu catálogo de cine favorito. Descubre, puntúa y guarda las películas que más te gustan." />
-    <meta property="og:title" content="CineApp" />
-    <meta property="og:description" content="Descubre, puntúa y guarda tus películas favoritas" />
-    <title>CineApp · Catálogo de Películas</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FilmVault — Tu cine, tu mundo</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg-dark: #0a0a0f;
+      --bg-card: #12121a;
+      --bg-card2: #1a1a28;
+      --accent: #e8b84b;
+      --accent2: #c9973a;
+      --text: #f0eee8;
+      --text-muted: #8a8a9a;
+      --border: rgba(255,255,255,0.07);
+      --gradient: linear-gradient(135deg, #e8b84b 0%, #c9973a 100%);
+      --gold-glow: 0 0 30px rgba(232,184,75,0.25);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg-dark);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+    }
+    h1, h2, h3, .display-font { font-family: 'Playfair Display', serif; }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-dark); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+    /* ── NAVBAR ── */
+    .navbar-filmvault {
+      background: rgba(10,10,15,0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 0;
+      position: sticky; top: 0; z-index: 999;
+    }
+    .brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: var(--accent) !important;
+      letter-spacing: -0.5px;
+      text-decoration: none;
+    }
+    .brand span { color: var(--text); }
+    .nav-link-custom {
+      color: var(--text-muted) !important;
+      font-weight: 500;
+      font-size: 0.88rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      transition: color 0.2s, background 0.2s;
+    }
+    .nav-link-custom:hover, .nav-link-custom.active {
+      color: var(--accent) !important;
+      background: rgba(232,184,75,0.08);
+    }
+    .btn-nav-login {
+      background: var(--gradient);
+      color: #0a0a0f !important;
+      font-weight: 600;
+      font-size: 0.85rem;
+      border: none;
+      padding: 0.45rem 1.2rem;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: box-shadow 0.2s, transform 0.15s;
+    }
+    .btn-nav-login:hover { box-shadow: var(--gold-glow); transform: translateY(-1px); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 5rem 0 4rem;
+      text-align: center;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(232,184,75,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-tag {
+      display: inline-block;
+      background: rgba(232,184,75,0.12);
+      border: 1px solid rgba(232,184,75,0.3);
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.3rem 1rem;
+      border-radius: 50px;
+      margin-bottom: 1.2rem;
+    }
+    .hero h1 {
+      font-size: clamp(2.4rem, 6vw, 5rem);
+      font-weight: 900;
+      line-height: 1.05;
+      margin-bottom: 1.2rem;
+    }
+    .hero h1 em { color: var(--accent); font-style: normal; }
+    .hero p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      max-width: 520px;
+      margin: 0 auto 2rem;
+      line-height: 1.7;
+    }
+    .search-bar {
+      max-width: 480px;
+      margin: 0 auto;
+      position: relative;
+    }
+    .search-bar input {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      padding: 0.85rem 3.5rem 0.85rem 1.4rem;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border 0.2s, box-shadow 0.2s;
+    }
+    .search-bar input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(232,184,75,0.15);
+    }
+    .search-bar input::placeholder { color: var(--text-muted); }
+    .search-bar i {
+      position: absolute; right: 1.2rem; top: 50%; transform: translateY(-50%);
+      color: var(--text-muted); font-size: 1.1rem; pointer-events: none;
+    }
+
+    /* ── SECTION TITLE ── */
+    .section-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+    .section-line {
+      width: 48px; height: 3px;
+      background: var(--gradient);
+      border-radius: 2px;
+      margin-bottom: 2rem;
+    }
+
+    /* ── GENRE PILLS ── */
+    .genre-pill {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 50px;
+      padding: 0.35rem 1rem;
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .genre-pill:hover, .genre-pill.active {
+      background: var(--gradient);
+      border-color: transparent;
+      color: #0a0a0f;
+      font-weight: 600;
+    }
+
+    /* ── MOVIE CARD ── */
+    .movie-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+      height: 100%;
+    }
+    .movie-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5), var(--gold-glow);
+      border-color: rgba(232,184,75,0.3);
+    }
+    .movie-poster {
+      position: relative;
+      aspect-ratio: 2/3;
+      overflow: hidden;
+    }
+    .movie-poster img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s;
+    }
+    .movie-card:hover .movie-poster img { transform: scale(1.06); }
+    .poster-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(10,10,15,0.9) 0%, transparent 50%);
+    }
+    .poster-badge {
+      position: absolute; top: 10px; left: 10px;
+      background: var(--gradient);
+      color: #0a0a0f;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.2rem 0.6rem;
+      border-radius: 50px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .poster-fav-btn {
+      position: absolute; top: 10px; right: 10px;
+      background: rgba(10,10,15,0.7);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 1rem;
+    }
+    .poster-fav-btn:hover { background: rgba(232,184,75,0.2); color: var(--accent); }
+    .poster-fav-btn.active { background: var(--gradient); color: #0a0a0f; border-color: transparent; }
+    .rating-badge {
+      position: absolute; bottom: 10px; right: 10px;
+      background: rgba(10,10,15,0.85);
+      border: 1px solid rgba(232,184,75,0.3);
+      border-radius: 8px;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent);
+      display: flex; align-items: center; gap: 3px;
+    }
+    .card-body-custom {
+      padding: 1rem 1.1rem 1.2rem;
+    }
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .card-meta {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .card-meta span { display: flex; align-items: center; gap: 3px; }
+
+    /* ── MODAL ── */
+    .modal-filmvault .modal-content {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      color: var(--text);
+    }
+    .modal-filmvault .modal-header {
+      border-bottom: 1px solid var(--border);
+      padding: 1.2rem 1.5rem;
+    }
+    .modal-filmvault .modal-footer {
+      border-top: 1px solid var(--border);
+    }
+    .modal-filmvault .btn-close {
+      filter: invert(1) opacity(0.5);
+    }
+    .modal-filmvault .btn-close:hover { opacity: 1; }
+
+    /* ── MOVIE DETAIL ── */
+    .detail-backdrop {
+      position: relative;
+      overflow: hidden;
+      border-radius: 16px;
+    }
+    .detail-backdrop img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      border-radius: 12px;
+    }
+    .detail-badge {
+      display: inline-block;
+      background: rgba(232,184,75,0.12);
+      border: 1px solid rgba(232,184,75,0.3);
+      color: var(--accent);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.2rem 0.7rem;
+      border-radius: 50px;
+      margin: 0.2rem;
+    }
+    .detail-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 900;
+      line-height: 1.15;
+    }
+    .detail-stat {
+      background: var(--bg-card2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.8rem 1rem;
+      text-align: center;
+    }
+    .detail-stat-num {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--accent);
+      font-family: 'Playfair Display', serif;
+    }
+    .detail-stat-label {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    /* ── STARS ── */
+    .stars-widget { display: flex; gap: 4px; }
+    .star-btn {
+      background: none; border: none; cursor: pointer;
+      font-size: 1.5rem; color: var(--border); transition: color 0.15s, transform 0.15s;
+    }
+    .star-btn:hover, .star-btn.active { color: var(--accent); }
+    .star-btn:hover { transform: scale(1.2); }
+
+    /* ── COMMENTS ── */
+    .comment-item {
+      background: var(--bg-card2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.1rem;
+      margin-bottom: 0.75rem;
+    }
+    .comment-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--gradient);
+      color: #0a0a0f;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+    .comment-author {
+      font-weight: 600;
+      font-size: 0.88rem;
+    }
+    .comment-time {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+    }
+    .comment-text {
+      font-size: 0.9rem;
+      color: #d0cec8;
+      margin-top: 0.4rem;
+      line-height: 1.6;
+    }
+    .comment-input-area {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      width: 100%;
+      resize: none;
+      outline: none;
+      transition: border 0.2s;
+    }
+    .comment-input-area:focus { border-color: var(--accent); }
+    .comment-input-area::placeholder { color: var(--text-muted); }
+
+    /* ── AUTH FORM ── */
+    .auth-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2.5rem;
+      max-width: 420px;
+      margin: 4rem auto;
+    }
+    .form-control-dark {
+      background: rgba(255,255,255,0.04) !important;
+      border: 1px solid var(--border) !important;
+      border-radius: 10px !important;
+      color: var(--text) !important;
+      font-family: 'DM Sans', sans-serif;
+      padding: 0.75rem 1rem;
+    }
+    .form-control-dark:focus {
+      border-color: var(--accent) !important;
+      box-shadow: 0 0 0 3px rgba(232,184,75,0.15) !important;
+    }
+    .form-control-dark::placeholder { color: var(--text-muted) !important; }
+    .form-label-dark { color: var(--text-muted); font-size: 0.85rem; font-weight: 500; margin-bottom: 0.4rem; }
+
+    /* ── BUTTONS ── */
+    .btn-gold {
+      background: var(--gradient);
+      color: #0a0a0f;
+      font-weight: 700;
+      border: none;
+      border-radius: 50px;
+      padding: 0.65rem 1.6rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: box-shadow 0.2s, transform 0.15s;
+    }
+    .btn-gold:hover { box-shadow: var(--gold-glow); transform: translateY(-1px); }
+    .btn-ghost {
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      padding: 0.65rem 1.6rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); }
+
+    /* ── FAVORITES PAGE ── */
+    .fav-empty {
+      text-align: center;
+      padding: 5rem 1rem;
+    }
+    .fav-empty i {
+      font-size: 4rem;
+      color: var(--border);
+      display: block;
+      margin-bottom: 1rem;
+    }
+
+    /* ── STATIC PAGES ── */
+    .static-hero {
+      background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-card2) 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 3.5rem 0 2.5rem;
+      margin-bottom: 3rem;
+    }
+    .static-hero h1 {
+      font-size: clamp(1.8rem, 4vw, 3rem);
+    }
+    .static-content {
+      color: #b0aead;
+      line-height: 1.85;
+      font-size: 0.96rem;
+    }
+    .static-content h3 {
+      font-family: 'Playfair Display', serif;
+      color: var(--accent);
+      font-size: 1.15rem;
+      margin: 2rem 0 0.7rem;
+    }
+    .info-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-align: center;
+    }
+    .info-card i {
+      font-size: 2rem;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      background: var(--bg-card);
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 0 1.5rem;
+      margin-top: 5rem;
+    }
+    .footer a { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; }
+    .footer a:hover { color: var(--accent); }
+    .footer-brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: var(--accent);
+    }
+
+    /* ── TOAST ── */
+    .toast-container-custom {
+      position: fixed;
+      bottom: 2rem; right: 2rem;
+      z-index: 9999;
+      display: flex; flex-direction: column; gap: 0.5rem;
+    }
+    .toast-item {
+      background: var(--bg-card2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.75rem 1.2rem;
+      color: var(--text);
+      font-size: 0.88rem;
+      display: flex; align-items: center; gap: 0.6rem;
+      animation: slideInToast 0.3s ease;
+      min-width: 260px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    }
+    .toast-item i { color: var(--accent); font-size: 1rem; }
+    @keyframes slideInToast {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 1.5rem 0;
+    }
+
+    /* ── TABS ── */
+    .tabs-dark { display: flex; gap: 0.5rem; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
+    .tab-btn {
+      background: none; border: none; cursor: pointer;
+      color: var(--text-muted); font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem; font-weight: 500; padding: 0.6rem 0.8rem;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s; margin-bottom: -1px;
+    }
+    .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .tab-btn:hover:not(.active) { color: var(--text); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 576px) {
+      .hero { padding: 3rem 0 2.5rem; }
+      .auth-card { padding: 1.8rem; margin: 2rem auto; }
+    }
+
+    /* ── SKELETON ── */
+    .skeleton {
+      background: linear-gradient(90deg, var(--bg-card2) 25%, rgba(255,255,255,0.06) 50%, var(--bg-card2) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 8px;
+    }
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* ── PAGE TRANSITION ── */
+    .page-enter {
+      animation: pageIn 0.3s ease;
+    }
+    @keyframes pageIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Hide Bootstrap modal backdrop issues */
+    .modal-backdrop { background: rgba(0,0,0,0.75); }
+  </style>
 </head>
-
 <body>
-    <noscript>Necesitas habilitar JavaScript para usar CineApp.</noscript>
-    <div id="root"></div>
-</body>
 
+<div id="root"></div>
+
+<!-- React + Babel + Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel">
+const { useState, useEffect, useCallback, useRef, createContext, useContext } = React;
+
+// ──────────────────────────────────────────
+// DATA
+// ──────────────────────────────────────────
+const MOVIES = [
+  {
+    id: 1, title: "Oppenheimer", year: 2023, genre: ["Drama","Historia"],
+    director: "Christopher Nolan", duration: "180 min",
+    poster: "https://image.tmdb.org/t/p/w500/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg",
+    backdrop: "https://image.tmdb.org/t/p/original/rLb2cwF3Pazuxaj0sRXQ037tGI1.jpg",
+    synopsis: "La impactante historia del físico J. Robert Oppenheimer y su papel en el desarrollo de la bomba atómica durante la Segunda Guerra Mundial.",
+    cast: ["Cillian Murphy","Emily Blunt","Matt Damon","Robert Downey Jr."],
+    language: "Inglés", country: "EE.UU."
+  },
+  {
+    id: 2, title: "Dune: Parte Dos", year: 2024, genre: ["Sci-Fi","Aventura"],
+    director: "Denis Villeneuve", duration: "167 min",
+    poster: "https://image.tmdb.org/t/p/w500/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg",
+    backdrop: "https://image.tmdb.org/t/p/original/xOMo8BRK7PfcJv9JCnx7s5hj0PX.jpg",
+    synopsis: "Paul Atreides se une a Chani y los Fremen en una guerra santa contra los conspiradores que destruyeron a su familia.",
+    cast: ["Timothée Chalamet","Zendaya","Rebecca Ferguson","Josh Brolin"],
+    language: "Inglés", country: "EE.UU."
+  },
+  {
+    id: 3, title: "Poor Things", year: 2023, genre: ["Fantasía","Drama"],
+    director: "Yorgos Lanthimos", duration: "141 min",
+    poster: "https://image.tmdb.org/t/p/w500/kCGlIMHnOm8JPXIcdXVXIIAFaSN.jpg",
+    backdrop: "https://image.tmdb.org/t/p/original/nTPFkLUARmo1bYHfkfdNpRKgEOs.jpg",
+    synopsis: "La increíble historia de Bella Baxter, una joven mujer devuelta a la vida por el excéntrico científico Dr. Godwin Baxter.",
+    cast: ["Emma Stone","Mark Ruffalo","Willem Dafoe","Ramy Youssef"],
+    language: "Inglés", country: "Reino Unido"
+  },
+  {
+    id: 4, title: "Anatomía de una caída", year: 2023, genre: ["Thriller","Drama"],
+    director: "Justine Triet", duration: "152 min",
+    poster: "https://image.tmdb.org/t/p/w500/ow8DpCqFcRkstD7JoPzO54e3hPu.jpg",
+    backdrop: "https://image.tmdb.org/t/p/original/mzPHCMH2b5sFseBUPSoHPwdSzRu.jpg",
+    synopsis: "Una escritora es sospechosa de la muerte de su marido en los Alpes franceses. Su hijo ciego fue el único testigo.",
+    cast: ["Sandra Hüller","Swann Arlaud","Milo Machado Graner"],
+    language: "Francés", country: "Francia"
+  },
+  {
+    id: 5, title: "El maestro jardinero", year: 2023, genre: ["Thriller","Drama"],
+    director: "Paul Schrader", duration: "111 min",
+    poster: "https://image.tmdb.org/t/p/w500/tNKhFQwrDGdcEMBSbgVQOmFcxZO.jpg",
+    backdrop: "https://image.tmdb.org/t/p/original/9zBGNMSJqzv4UIq3MKVcp1QFgRt.jpg",
+    synopsis: "Un meticuloso jardinero guarda secretos oscuros de su pasado mientras protege a una joven heredera.",
+    cast: ["Joel Edgerton","Sigourney Weaver","Quintessa Swindell"],
+    language: "Inglés", country: "EE.UU."
+  },
+  {
+    id: 6, title: "Saltburn", year: 2023, genre: ["Thriller","Drama"],
+    director: "Emerald Fennell", duration: "131 min",
+    poster: "https://image.tmdb.org/t/p/w500/qjhahNLSZ705B5JP92YMEYPocPz.jpg",
+    backdrop: "https://image.tmdb.org/t/p/original/sqGzs5KAA49F2n9UUlBpULzVqiO.jpg",
+    synopsis: "Un estudiante de Oxford fascinado por un compañero carismático y su excéntrica familia aristocrática.",
+    cast: ["Barry Keoghan","Jacob Elordi","Rosamund Pike","Richard E. Grant"],
+    language: "Inglés", country: "Reino Unido"
+  },
+  {
+    id: 7, title: "Past Lives", year: 2023, genre: ["Romance","Drama"],
+    director: "Celine Song", duration: "106 min",
+    poster: "https://image.tmdb.org/t/p/w500/k3waqVXsnäbig.jpg",
+    backdrop: "https://image.tmdb.org/t/p/original/bQFuLFWuSFcqpgD1W3jF5qTUjoe.jpg",
+    synopsis: "Dos amigos de la infancia de Corea del Sur se reencuentran décadas después, reflexionando sobre el destino y las elecciones vitales.",
+    cast: ["Greta Lee","Teo Yoo","John Magaro"],
+    language: "Inglés/Coreano", country: "EE.UU./Canadá"
+  },
+  {
+    id: 8, title: "Killers of the Flower Moon", year: 2023, genre: ["Crimen","Historia"],
+    director: "Martin Scorsese", duration: "206 min",
+    poster: "https://image.tmdb.org/t/p/w500/dB6SuxMSaFJPwFz7kTGZ8xMzmzR.jpg",
+    backdrop: "https://image.tmdb.org/t/p/original/1Y4lOwjCfLiF6K7JxKS1XhxhkEZ.jpg",
+    synopsis: "A principios del siglo XX, los miembros de la nación Osage son asesinados misteriosamente tras el descubrimiento de petróleo.",
+    cast: ["Leonardo DiCaprio","Robert De Niro","Lily Gladstone"],
+    language: "Inglés", country: "EE.UU."
+  },
+];
+
+const GENRES = ["Todos","Drama","Thriller","Sci-Fi","Romance","Aventura","Fantasía","Crimen","Historia"];
+
+// ──────────────────────────────────────────
+// CONTEXT
+// ──────────────────────────────────────────
+const AppContext = createContext(null);
+
+function AppProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [favorites, setFavorites] = useState([]);
+  const [ratings, setRatings] = useState({});  // { movieId: { userId: score } }
+  const [comments, setComments] = useState({}); // { movieId: [{id,user,text,time}] }
+  const [toasts, setToasts] = useState([]);
+
+  const addToast = useCallback((msg, icon = "bi-check-circle-fill") => {
+    const id = Date.now();
+    setToasts(t => [...t, { id, msg, icon }]);
+    setTimeout(() => setToasts(t => t.filter(x => x.id !== id)), 3500);
+  }, []);
+
+  const login = (username) => { setUser(username); addToast(`¡Bienvenido, ${username}!`, "bi-person-check-fill"); };
+  const logout = () => { setUser(null); addToast("Sesión cerrada", "bi-door-closed"); };
+
+  const toggleFav = (id) => {
+    if (!user) return false;
+    setFavorites(f => {
+      if (f.includes(id)) { addToast("Eliminado de favoritos", "bi-heart"); return f.filter(x => x !== id); }
+      else { addToast("Añadido a favoritos", "bi-heart-fill"); return [...f, id]; }
+    });
+    return true;
+  };
+
+  const rateMovie = (movieId, score) => {
+    if (!user) return;
+    setRatings(r => ({
+      ...r,
+      [movieId]: { ...(r[movieId] || {}), [user]: score }
+    }));
+    addToast(`Valoración de ${score}★ guardada`, "bi-star-fill");
+  };
+
+  const addComment = (movieId, text) => {
+    if (!user || !text.trim()) return;
+    const comment = {
+      id: Date.now(),
+      user,
+      text: text.trim(),
+      time: new Date().toLocaleString('es-ES', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' })
+    };
+    setComments(c => ({
+      ...c,
+      [movieId]: [comment, ...(c[movieId] || [])]
+    }));
+    addToast("Comentario publicado", "bi-chat-fill");
+  };
+
+  const getAvgRating = (movieId) => {
+    const r = ratings[movieId];
+    if (!r) return null;
+    const vals = Object.values(r);
+    if (!vals.length) return null;
+    return (vals.reduce((a,b) => a+b, 0) / vals.length).toFixed(1);
+  };
+
+  const getUserRating = (movieId) => {
+    if (!user) return 0;
+    return ratings[movieId]?.[user] || 0;
+  };
+
+  return (
+    <AppContext.Provider value={{
+      user, login, logout,
+      favorites, toggleFav,
+      ratings, rateMovie, getAvgRating, getUserRating,
+      comments, addComment,
+      toasts
+    }}>
+      {children}
+    </AppContext.Provider>
+  );
+}
+
+const useApp = () => useContext(AppContext);
+
+// ──────────────────────────────────────────
+// STARS COMPONENT
+// ──────────────────────────────────────────
+function Stars({ value, onChange, size = "1.4rem", readOnly = false }) {
+  const [hover, setHover] = useState(0);
+  return (
+    <div className="stars-widget" style={{ fontSize: size }}>
+      {[1,2,3,4,5].map(n => (
+        <button
+          key={n}
+          className={`star-btn ${(readOnly ? value : (hover || value)) >= n ? 'active' : ''}`}
+          onClick={() => !readOnly && onChange && onChange(n)}
+          onMouseEnter={() => !readOnly && setHover(n)}
+          onMouseLeave={() => !readOnly && setHover(0)}
+          disabled={readOnly}
+          style={{ cursor: readOnly ? 'default' : 'pointer', background: 'none', border: 'none', fontSize: size }}
+        >
+          <i className="bi bi-star-fill"></i>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+// ──────────────────────────────────────────
+// MOVIE DETAIL MODAL
+// ──────────────────────────────────────────
+function MovieModal({ movie, onClose }) {
+  const { user, favorites, toggleFav, rateMovie, getAvgRating, getUserRating, comments, addComment } = useApp();
+  const [commentText, setCommentText] = useState("");
+  const [activeTab, setActiveTab] = useState("info");
+  const userRating = getUserRating(movie.id);
+  const avgRating = getAvgRating(movie.id);
+  const isFav = favorites.includes(movie.id);
+  const movieComments = comments[movie.id] || [];
+
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = ''; };
+  }, []);
+
+  const handleComment = () => {
+    if (!commentText.trim()) return;
+    addComment(movie.id, commentText);
+    setCommentText("");
+  };
+
+  return (
+    <div className="modal-filmvault" style={{
+      position:'fixed', inset:0, zIndex:1050,
+      background:'rgba(0,0,0,0.8)',
+      backdropFilter:'blur(8px)',
+      display:'flex', alignItems:'flex-start', justifyContent:'center',
+      overflowY:'auto', padding:'1.5rem 1rem'
+    }}
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+    >
+      <div className="modal-content" style={{ maxWidth:820, width:'100%', marginTop:'auto', marginBottom:'auto', borderRadius:20, background:'var(--bg-card)', border:'1px solid var(--border)', overflow:'hidden' }}>
+        {/* Backdrop header */}
+        <div style={{ position:'relative', height:200, overflow:'hidden' }}>
+          <img src={movie.backdrop || movie.poster} alt="" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
+          <div style={{ position:'absolute', inset:0, background:'linear-gradient(to top, var(--bg-card) 0%, rgba(0,0,0,0.4) 100%)' }}></div>
+          <button onClick={onClose} style={{
+            position:'absolute', top:12, right:12,
+            background:'rgba(0,0,0,0.6)', border:'1px solid var(--border)',
+            borderRadius:'50%', width:36, height:36, cursor:'pointer',
+            color:'var(--text)', fontSize:'1.1rem', display:'flex', alignItems:'center', justifyContent:'center'
+          }}>
+            <i className="bi bi-x"></i>
+          </button>
+        </div>
+
+        <div className="p-3 p-md-4">
+          <div className="row g-4">
+            {/* Poster */}
+            <div className="col-4 col-sm-3">
+              <img src={movie.poster} alt={movie.title}
+                style={{ width:'100%', borderRadius:12, boxShadow:'0 10px 30px rgba(0,0,0,0.5)' }}
+                onError={e => { e.target.src = `https://placehold.co/300x450/12121a/e8b84b?text=${encodeURIComponent(movie.title)}`; }}
+              />
+            </div>
+            {/* Info */}
+            <div className="col-8 col-sm-9">
+              <div className="detail-title mb-2">{movie.title}</div>
+              <div className="mb-2" style={{ color:'var(--text-muted)', fontSize:'0.85rem' }}>
+                {movie.year} &bull; {movie.director} &bull; {movie.duration}
+              </div>
+              <div className="mb-3">
+                {movie.genre.map(g => <span key={g} className="detail-badge">{g}</span>)}
+              </div>
+              {/* Stats */}
+              <div className="row g-2 mb-3">
+                <div className="col-4">
+                  <div className="detail-stat">
+                    <div className="detail-stat-num">{avgRating ?? '—'}</div>
+                    <div className="detail-stat-label">Valoración</div>
+                  </div>
+                </div>
+                <div className="col-4">
+                  <div className="detail-stat">
+                    <div className="detail-stat-num">{movieComments.length}</div>
+                    <div className="detail-stat-label">Comentarios</div>
+                  </div>
+                </div>
+                <div className="col-4">
+                  <div className="detail-stat">
+                    <div className="detail-stat-num" style={{ fontSize:'1.1rem' }}>
+                      <i className={`bi ${isFav ? 'bi-heart-fill' : 'bi-heart'}`} style={{ color: isFav ? '#e84b4b' : 'var(--accent)' }}></i>
+                    </div>
+                    <div className="detail-stat-label">Favorito</div>
+                  </div>
+                </div>
+              </div>
+              {/* Fav button */}
+              <div className="d-flex gap-2 flex-wrap">
+                <button className={isFav ? "btn-gold" : "btn-ghost"} onClick={() => toggleFav(movie.id)}
+                  style={{ borderRadius: 50, padding:'0.5rem 1.2rem', fontSize:'0.85rem', fontWeight:600,
+                    background: isFav ? 'linear-gradient(135deg,#e84b4b,#c93a3a)' : undefined }}>
+                  <i className={`bi ${isFav ? 'bi-heart-fill' : 'bi-heart'} me-1`}></i>
+                  {isFav ? 'En favoritos' : 'Añadir a favoritos'}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="divider"></div>
+
+          {/* Tabs */}
+          <div className="tabs-dark">
+            {['info','rating','comments'].map(t => (
+              <button key={t} className={`tab-btn ${activeTab===t?'active':''}`} onClick={() => setActiveTab(t)}>
+                <i className={`bi ${t==='info'?'bi-info-circle':t==='rating'?'bi-star':'bi-chat'} me-1`}></i>
+                {t==='info'?'Información':t==='rating'?'Valorar':'Comentarios'}
+                {t==='comments' && movieComments.length > 0 && <span style={{ marginLeft:4, background:'var(--accent)', color:'#0a0a0f', borderRadius:50, fontSize:'0.7rem', padding:'0 5px', fontWeight:700 }}>{movieComments.length}</span>}
+              </button>
+            ))}
+          </div>
+
+          {/* Tab: Info */}
+          {activeTab === 'info' && (
+            <div className="page-enter">
+              <p style={{ color:'#b0aead', lineHeight:1.8, fontSize:'0.93rem', marginBottom:'1.2rem' }}>{movie.synopsis}</p>
+              <div className="row g-2" style={{ fontSize:'0.84rem' }}>
+                <div className="col-6 col-md-3" style={{ color:'var(--text-muted)' }}>
+                  <strong style={{ color:'var(--accent)', display:'block', marginBottom:2 }}>Director</strong>
+                  {movie.director}
+                </div>
+                <div className="col-6 col-md-3" style={{ color:'var(--text-muted)' }}>
+                  <strong style={{ color:'var(--accent)', display:'block', marginBottom:2 }}>País</strong>
+                  {movie.country}
+                </div>
+                <div className="col-6 col-md-3" style={{ color:'var(--text-muted)' }}>
+                  <strong style={{ color:'var(--accent)', display:'block', marginBottom:2 }}>Idioma</strong>
+                  {movie.language}
+                </div>
+                <div className="col-6 col-md-3" style={{ color:'var(--text-muted)' }}>
+                  <strong style={{ color:'var(--accent)', display:'block', marginBottom:2 }}>Duración</strong>
+                  {movie.duration}
+                </div>
+              </div>
+              <div className="mt-3" style={{ color:'var(--text-muted)', fontSize:'0.84rem' }}>
+                <strong style={{ color:'var(--accent)', display:'block', marginBottom:4 }}>Reparto</strong>
+                {movie.cast.join(' · ')}
+              </div>
+            </div>
+          )}
+
+          {/* Tab: Rating */}
+          {activeTab === 'rating' && (
+            <div className="page-enter text-center py-3">
+              {user ? (
+                <>
+                  <p style={{ color:'var(--text-muted)', marginBottom:'1rem' }}>
+                    {userRating ? `Tu valoración actual: ${userRating}★` : 'Aún no has valorado esta película'}
+                  </p>
+                  <div className="d-flex justify-content-center mb-3">
+                    <Stars value={userRating} size="2.2rem" onChange={score => rateMovie(movie.id, score)} />
+                  </div>
+                  {avgRating && (
+                    <div style={{ background:'var(--bg-card2)', borderRadius:12, padding:'1rem', display:'inline-block', minWidth:200 }}>
+                      <div style={{ fontSize:'2.5rem', fontWeight:900, color:'var(--accent)', fontFamily:'Playfair Display' }}>{avgRating}</div>
+                      <div style={{ color:'var(--text-muted)', fontSize:'0.8rem' }}>Puntuación media</div>
+                      <Stars value={Math.round(avgRating)} size="1rem" readOnly />
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div>
+                  <i className="bi bi-star" style={{ fontSize:'3rem', color:'var(--border)', display:'block', marginBottom:12 }}></i>
+                  <p style={{ color:'var(--text-muted)' }}>Inicia sesión para valorar esta película</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Tab: Comments */}
+          {activeTab === 'comments' && (
+            <div className="page-enter">
+              {user ? (
+                <div className="mb-3">
+                  <textarea
+                    className="comment-input-area"
+                    rows={3}
+                    placeholder="Escribe tu comentario..."
+                    value={commentText}
+                    onChange={e => setCommentText(e.target.value)}
+                  />
+                  <div className="d-flex justify-content-end mt-2">
+                    <button className="btn-gold" onClick={handleComment} disabled={!commentText.trim()}>
+                      <i className="bi bi-send me-1"></i> Publicar
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div style={{ background:'var(--bg-card2)', border:'1px solid var(--border)', borderRadius:10, padding:'0.9rem 1rem', marginBottom:'1rem', color:'var(--text-muted)', fontSize:'0.88rem' }}>
+                  <i className="bi bi-lock me-2" style={{ color:'var(--accent)' }}></i>
+                  Inicia sesión para dejar un comentario
+                </div>
+              )}
+              {movieComments.length === 0 ? (
+                <div style={{ textAlign:'center', padding:'2rem', color:'var(--text-muted)' }}>
+                  <i className="bi bi-chat-left" style={{ fontSize:'2rem', display:'block', marginBottom:8 }}></i>
+                  Sé el primero en comentar
+                </div>
+              ) : (
+                movieComments.map(c => (
+                  <div key={c.id} className="comment-item">
+                    <div className="d-flex gap-2 align-items-start">
+                      <div className="comment-avatar">{c.user[0].toUpperCase()}</div>
+                      <div style={{ flex:1 }}>
+                        <div className="d-flex justify-content-between align-items-center">
+                          <span className="comment-author">{c.user}</span>
+                          <span className="comment-time">{c.time}</span>
+                        </div>
+                        <p className="comment-text">{c.text}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ──────────────────────────────────────────
+// MOVIE CARD
+// ──────────────────────────────────────────
+function MovieCard({ movie, onClick }) {
+  const { user, favorites, toggleFav, getAvgRating } = useApp();
+  const isFav = favorites.includes(movie.id);
+  const avg = getAvgRating(movie.id);
+
+  return (
+    <div className="movie-card" onClick={onClick}>
+      <div className="movie-poster">
+        <img
+          src={movie.poster}
+          alt={movie.title}
+          loading="lazy"
+          onError={e => { e.target.src = `https://placehold.co/300x450/12121a/e8b84b?text=${encodeURIComponent(movie.title)}`; }}
+        />
+        <div className="poster-overlay"></div>
+        <span className="poster-badge">{movie.year}</span>
+        <button
+          className={`poster-fav-btn ${isFav ? 'active' : ''}`}
+          onClick={e => { e.stopPropagation(); toggleFav(movie.id); }}
+          title={isFav ? 'Quitar de favoritos' : 'Añadir a favoritos'}
+        >
+          <i className={`bi ${isFav ? 'bi-heart-fill' : 'bi-heart'}`}></i>
+        </button>
+        {avg && (
+          <div className="rating-badge">
+            <i className="bi bi-star-fill"></i>{avg}
+          </div>
+        )}
+      </div>
+      <div className="card-body-custom">
+        <div className="card-title">{movie.title}</div>
+        <div className="card-meta">
+          <span><i className="bi bi-camera-video"></i> {movie.director}</span>
+        </div>
+        <div className="card-meta mt-1">
+          {movie.genre.slice(0,2).map(g => (
+            <span key={g} style={{ background:'rgba(232,184,75,0.08)', color:'var(--accent)', borderRadius:50, padding:'0.1rem 0.5rem', fontSize:'0.72rem', fontWeight:600 }}>{g}</span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ──────────────────────────────────────────
+// CATALOG PAGE
+// ──────────────────────────────────────────
+function CatalogPage() {
+  const [search, setSearch] = useState("");
+  const [genre, setGenre] = useState("Todos");
+  const [selectedMovie, setSelectedMovie] = useState(null);
+
+  const filtered = MOVIES.filter(m => {
+    const matchSearch = m.title.toLowerCase().includes(search.toLowerCase()) || m.director.toLowerCase().includes(search.toLowerCase());
+    const matchGenre = genre === "Todos" || m.genre.includes(genre);
+    return matchSearch && matchGenre;
+  });
+
+  return (
+    <div className="page-enter">
+      {/* Hero */}
+      <section className="hero">
+        <div className="container">
+          <div className="hero-tag"><i className="bi bi-camera-reels me-1"></i>Catálogo FilmVault</div>
+          <h1>Descubre el cine<br />que <em>te mueve</em></h1>
+          <p>Explora nuestra selección curada de las mejores películas. Valóralas, comenta y guarda tus favoritas.</p>
+          <div className="search-bar">
+            <input
+              type="text"
+              placeholder="Busca por título o director..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+            />
+            <i className="bi bi-search"></i>
+          </div>
+        </div>
+      </section>
+
+      <div className="container pb-5">
+        {/* Genre filter */}
+        <div className="d-flex gap-2 mb-4 flex-wrap">
+          {GENRES.map(g => (
+            <button key={g} className={`genre-pill ${genre===g?'active':''}`} onClick={() => setGenre(g)}>{g}</button>
+          ))}
+        </div>
+
+        {/* Results count */}
+        <div className="mb-3" style={{ color:'var(--text-muted)', fontSize:'0.85rem' }}>
+          {filtered.length} película{filtered.length !== 1 ? 's' : ''} encontrada{filtered.length !== 1 ? 's' : ''}
+        </div>
+
+        {/* Grid */}
+        {filtered.length > 0 ? (
+          <div className="row g-3 g-md-4">
+            {filtered.map(m => (
+              <div key={m.id} className="col-6 col-sm-4 col-lg-3">
+                <MovieCard movie={m} onClick={() => setSelectedMovie(m)} />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div style={{ textAlign:'center', padding:'5rem 1rem', color:'var(--text-muted)' }}>
+            <i className="bi bi-film" style={{ fontSize:'3.5rem', display:'block', marginBottom:16, opacity:0.3 }}></i>
+            <p>No se encontraron películas con ese criterio</p>
+          </div>
+        )}
+      </div>
+
+      {selectedMovie && <MovieModal movie={selectedMovie} onClose={() => setSelectedMovie(null)} />}
+    </div>
+  );
+}
+
+// ──────────────────────────────────────────
+// FAVORITES PAGE
+// ──────────────────────────────────────────
+function FavoritesPage({ navigate }) {
+  const { user, favorites, getAvgRating } = useApp();
+  const [selectedMovie, setSelectedMovie] = useState(null);
+
+  if (!user) return (
+    <div className="container py-5 text-center page-enter">
+      <i className="bi bi-lock" style={{ fontSize:'4rem', color:'var(--border)', display:'block', marginBottom:16 }}></i>
+      <h2 style={{ fontFamily:'Playfair Display', color:'var(--accent)', marginBottom:12 }}>Acceso restringido</h2>
+      <p style={{ color:'var(--text-muted)', marginBottom:24 }}>Inicia sesión para ver tus películas favoritas</p>
+      <button className="btn-gold" onClick={() => navigate('login')}>Iniciar sesión</button>
+    </div>
+  );
+
+  const favMovies = MOVIES.filter(m => favorites.includes(m.id));
+
+  return (
+    <div className="page-enter">
+      <div className="static-hero">
+        <div className="container">
+          <div className="hero-tag"><i className="bi bi-heart-fill me-1"></i>Mis Favoritos</div>
+          <h1 className="display-font" style={{ fontFamily:'Playfair Display', fontSize:'2.5rem', marginBottom:'0.5rem' }}>Tu colección personal</h1>
+          <p style={{ color:'var(--text-muted)', marginBottom:0 }}>
+            {favMovies.length} película{favMovies.length !== 1?'s':''} guardada{favMovies.length !== 1?'s':''}
+          </p>
+        </div>
+      </div>
+
+      <div className="container pb-5">
+        {favMovies.length === 0 ? (
+          <div className="fav-empty">
+            <i className="bi bi-heart"></i>
+            <h3 style={{ fontFamily:'Playfair Display', marginBottom:12 }}>Tu lista está vacía</h3>
+            <p style={{ color:'var(--text-muted)', marginBottom:24 }}>Explora el catálogo y guarda las películas que más te gusten</p>
+            <button className="btn-gold" onClick={() => navigate('catalog')}>Explorar catálogo</button>
+          </div>
+        ) : (
+          <div className="row g-3 g-md-4">
+            {favMovies.map(m => (
+              <div key={m.id} className="col-6 col-sm-4 col-lg-3">
+                <MovieCard movie={m} onClick={() => setSelectedMovie(m)} />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {selectedMovie && <MovieModal movie={selectedMovie} onClose={() => setSelectedMovie(null)} />}
+    </div>
+  );
+}
+
+// ──────────────────────────────────────────
+// AUTH PAGE
+// ──────────────────────────────────────────
+function AuthPage({ navigate }) {
+  const { login } = useApp();
+  const [isRegister, setIsRegister] = useState(false);
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handle = (e) => {
+    e.preventDefault();
+    if (!username.trim() || !password.trim()) { setError("Completa todos los campos"); return; }
+    if (isRegister && !email.trim()) { setError("Introduce tu email"); return; }
+    login(username);
+    navigate('catalog');
+  };
+
+  return (
+    <div className="container page-enter">
+      <div className="auth-card">
+        <div style={{ textAlign:'center', marginBottom:'2rem' }}>
+          <div style={{ fontFamily:'Playfair Display', fontSize:'1.8rem', fontWeight:900, color:'var(--accent)' }}>
+            Film<span style={{ color:'var(--text)' }}>Vault</span>
+          </div>
+          <h2 style={{ fontFamily:'Playfair Display', fontSize:'1.5rem', marginTop:'1rem', marginBottom:'0.4rem' }}>
+            {isRegister ? 'Crear cuenta' : 'Bienvenido de vuelta'}
+          </h2>
+          <p style={{ color:'var(--text-muted)', fontSize:'0.88rem' }}>
+            {isRegister ? 'Únete a nuestra comunidad cinéfila' : 'Accede a tu colección de películas'}
+          </p>
+        </div>
+
+        {error && <div style={{ background:'rgba(232,75,75,0.1)', border:'1px solid rgba(232,75,75,0.3)', borderRadius:10, padding:'0.7rem 1rem', marginBottom:'1rem', color:'#e84b4b', fontSize:'0.85rem' }}><i className="bi bi-exclamation-triangle me-2"></i>{error}</div>}
+
+        <form onSubmit={handle}>
+          <div className="mb-3">
+            <label className="form-label-dark">Usuario</label>
+            <input className="form-control-dark form-control" type="text" placeholder="Tu nombre de usuario" value={username} onChange={e => setUsername(e.target.value)} />
+          </div>
+          {isRegister && (
+            <div className="mb-3">
+              <label className="form-label-dark">Email</label>
+              <input className="form-control-dark form-control" type="email" placeholder="tu@email.com" value={email} onChange={e => setEmail(e.target.value)} />
+            </div>
+          )}
+          <div className="mb-4">
+            <label className="form-label-dark">Contraseña</label>
+            <input className="form-control-dark form-control" type="password" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} />
+          </div>
+          <button type="submit" className="btn-gold w-100" style={{ borderRadius:10 }}>
+            {isRegister ? 'Crear cuenta' : 'Iniciar sesión'}
+          </button>
+        </form>
+
+        <div className="divider"></div>
+        <div style={{ textAlign:'center', fontSize:'0.85rem', color:'var(--text-muted)' }}>
+          {isRegister ? '¿Ya tienes cuenta? ' : '¿No tienes cuenta? '}
+          <button onClick={() => { setIsRegister(!isRegister); setError(""); }}
+            style={{ background:'none', border:'none', color:'var(--accent)', fontWeight:600, cursor:'pointer', padding:0 }}>
+            {isRegister ? 'Inicia sesión' : 'Regístrate gratis'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ──────────────────────────────────────────
+// CONTACT PAGE
+// ──────────────────────────────────────────
+function ContactPage() {
+  const [sent, setSent] = useState(false);
+  return (
+    <div className="page-enter">
+      <div className="static-hero">
+        <div className="container">
+          <div className="hero-tag"><i className="bi bi-envelope me-1"></i>Contacto</div>
+          <h1 style={{ fontFamily:'Playfair Display', marginBottom:'0.5rem' }}>Escríbenos</h1>
+          <p style={{ color:'var(--text-muted)', marginBottom:0 }}>Estamos aquí para ayudarte</p>
+        </div>
+      </div>
+      <div className="container pb-5">
+        <div className="row g-4">
+          <div className="col-md-5">
+            <h2 className="section-title mb-2">Información de contacto</h2>
+            <div className="section-line"></div>
+            <div className="row g-3">
+              {[
+                { icon:'bi-envelope-fill', title:'Email', info:'hola@filmvault.es' },
+                { icon:'bi-telephone-fill', title:'Teléfono', info:'+34 91 234 5678' },
+                { icon:'bi-geo-alt-fill', title:'Dirección', info:'Calle del Cine 42, Madrid 28001' },
+                { icon:'bi-clock-fill', title:'Horario', info:'Lun-Vie · 9:00–18:00' },
+              ].map(item => (
+                <div key={item.title} className="col-12">
+                  <div className="info-card d-flex align-items-center gap-3 text-start">
+                    <div style={{ background:'rgba(232,184,75,0.12)', borderRadius:12, width:48, height:48, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+                      <i className={`bi ${item.icon}`} style={{ color:'var(--accent)', fontSize:'1.2rem' }}></i>
+                    </div>
+                    <div>
+                      <div style={{ fontWeight:600, fontSize:'0.9rem' }}>{item.title}</div>
+                      <div style={{ color:'var(--text-muted)', fontSize:'0.85rem' }}>{item.info}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-4">
+              <h5 style={{ fontFamily:'Playfair Display', color:'var(--accent)', marginBottom:'0.8rem' }}>Síguenos</h5>
+              <div className="d-flex gap-2">
+                {['bi-twitter-x','bi-instagram','bi-facebook','bi-youtube'].map(icon => (
+                  <div key={icon} style={{ background:'var(--bg-card2)', border:'1px solid var(--border)', borderRadius:10, width:40, height:40, display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', transition:'all .2s' }}>
+                    <i className={`bi ${icon}`} style={{ color:'var(--text-muted)', fontSize:'1rem' }}></i>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="col-md-7">
+            <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:20, padding:'2rem' }}>
+              <h3 style={{ fontFamily:'Playfair Display', marginBottom:'1.5rem' }}>Envíanos un mensaje</h3>
+              {sent ? (
+                <div style={{ textAlign:'center', padding:'3rem 1rem' }}>
+                  <i className="bi bi-check-circle-fill" style={{ fontSize:'3rem', color:'var(--accent)', display:'block', marginBottom:16 }}></i>
+                  <h4 style={{ fontFamily:'Playfair Display', marginBottom:8 }}>¡Mensaje enviado!</h4>
+                  <p style={{ color:'var(--text-muted)' }}>Te responderemos en un plazo de 24 horas</p>
+                  <button className="btn-ghost mt-3" onClick={() => setSent(false)}>Enviar otro mensaje</button>
+                </div>
+              ) : (
+                <form onSubmit={e => { e.preventDefault(); setSent(true); }}>
+                  <div className="row g-3">
+                    <div className="col-sm-6">
+                      <label className="form-label-dark">Nombre</label>
+                      <input className="form-control-dark form-control" type="text" placeholder="Tu nombre" required />
+                    </div>
+                    <div className="col-sm-6">
+                      <label className="form-label-dark">Email</label>
+                      <input className="form-control-dark form-control" type="email" placeholder="tu@email.com" required />
+                    </div>
+                    <div className="col-12">
+                      <label className="form-label-dark">Asunto</label>
+                      <input className="form-control-dark form-control" type="text" placeholder="¿En qué podemos ayudarte?" required />
+                    </div>
+                    <div className="col-12">
+                      <label className="form-label-dark">Mensaje</label>
+                      <textarea className="form-control-dark form-control" rows={5} placeholder="Escribe tu mensaje aquí..." required></textarea>
+                    </div>
+                    <div className="col-12">
+                      <button type="submit" className="btn-gold">
+                        <i className="bi bi-send me-2"></i>Enviar mensaje
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ──────────────────────────────────────────
+// LEGAL PAGE
+// ──────────────────────────────────────────
+function LegalPage() {
+  return (
+    <div className="page-enter">
+      <div className="static-hero">
+        <div className="container">
+          <div className="hero-tag"><i className="bi bi-shield-check me-1"></i>Legal</div>
+          <h1 style={{ fontFamily:'Playfair Display', marginBottom:'0.5rem' }}>Aviso Legal</h1>
+          <p style={{ color:'var(--text-muted)', marginBottom:0 }}>Última actualización: enero 2025</p>
+        </div>
+      </div>
+      <div className="container pb-5">
+        <div className="row justify-content-center">
+          <div className="col-lg-8">
+            <div className="static-content">
+              <h3>1. Identificación del titular</h3>
+              <p>En cumplimiento con el deber de información recogido en artículo 10 de la Ley 34/2002, de 11 de julio, de Servicios de la Sociedad de la Información y del Comercio Electrónico (LSSICE), la presente información identifica al titular del sitio web <strong style={{ color:'var(--accent)' }}>FilmVault</strong>:</p>
+              <ul style={{ paddingLeft:'1.5rem', marginTop:'0.75rem' }}>
+                <li><strong>Denominación social:</strong> FilmVault S.L.</li>
+                <li><strong>NIF:</strong> B-12345678</li>
+                <li><strong>Domicilio social:</strong> Calle del Cine 42, 28001 Madrid</li>
+                <li><strong>Email:</strong> legal@filmvault.es</li>
+              </ul>
+
+              <h3>2. Objeto y ámbito de aplicación</h3>
+              <p>El presente Aviso Legal regula el acceso y uso del sitio web filmvault.es (en adelante, "el Sitio Web"), cuya titularidad corresponde a FilmVault S.L. El acceso y uso del Sitio Web implica la aceptación plena y sin reservas de todas las disposiciones incluidas en este Aviso Legal.</p>
+
+              <h3>3. Condiciones de uso</h3>
+              <p>El usuario se compromete a utilizar el Sitio Web y todos los contenidos y servicios que se ofrecen a través del mismo de conformidad con la ley, el presente Aviso Legal y demás condiciones, reglamentos e instrucciones que en su caso pudieran ser de aplicación. El usuario se abstendrá de utilizar los contenidos del Sitio Web con fines ilícitos o contrarios a las buenas costumbres.</p>
+
+              <h3>4. Propiedad intelectual e industrial</h3>
+              <p>Todos los contenidos del Sitio Web (textos, fotografías, gráficos, imágenes, tecnología, software, links, contenidos, diseño gráfico, código fuente, etc.) son propiedad de FilmVault S.L. o de terceros, sin que puedan entenderse cedidos al usuario ninguno de los derechos de explotación sobre los mismos más allá de lo estrictamente necesario para el correcto uso del Sitio Web.</p>
+
+              <h3>5. Política de privacidad y protección de datos</h3>
+              <p>Los datos personales recogidos en el proceso de registro y uso del servicio serán tratados de acuerdo con el Reglamento General de Protección de Datos (RGPD) y la Ley Orgánica de Protección de Datos Personales y garantía de los derechos digitales (LOPDGDD). El usuario tiene derecho a acceder, rectificar, suprimir, limitar el tratamiento, portar sus datos y oponerse a su tratamiento, dirigiéndose a legal@filmvault.es.</p>
+
+              <h3>6. Cookies</h3>
+              <p>El Sitio Web utiliza cookies propias y de terceros para analizar el comportamiento de los usuarios, con el fin de mejorar los servicios prestados. Si continúas navegando, consideramos que aceptas su uso. Puedes revocar tu consentimiento y obtener más información sobre las cookies utilizadas en nuestra Política de Cookies.</p>
+
+              <h3>7. Limitación de responsabilidad</h3>
+              <p>FilmVault S.L. no garantiza la disponibilidad y continuidad del funcionamiento del Sitio Web, ni que el contenido esté libre de errores. FilmVault S.L. excluye, con las reservas establecidas en el ordenamiento jurídico, cualquier responsabilidad por los daños y perjuicios que puedan derivarse de la utilización de los servicios y contenidos del Sitio Web.</p>
+
+              <h3>8. Legislación aplicable y jurisdicción</h3>
+              <p>Las relaciones entre FilmVault S.L. y el usuario se regirán por la normativa española vigente. Cualquier controversia que se suscite en relación con el Sitio Web o los servicios prestados a través de él se someterá a los Juzgados y Tribunales de la ciudad de Madrid, salvo que la normativa aplicable establezca otra jurisdicción imperativa.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ──────────────────────────────────────────
+// NAVBAR
+// ──────────────────────────────────────────
+function Navbar({ currentPage, navigate }) {
+  const { user, logout, favorites } = useApp();
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const links = [
+    { id:'catalog', label:'Catálogo', icon:'bi-film' },
+    { id:'favorites', label:'Favoritos', icon:'bi-heart' },
+    { id:'contact', label:'Contacto', icon:'bi-envelope' },
+    { id:'legal', label:'Legal', icon:'bi-shield-check' },
+  ];
+
+  return (
+    <nav className="navbar-filmvault">
+      <div className="container">
+        <div className="d-flex align-items-center justify-content-between">
+          {/* Brand */}
+          <a className="brand" onClick={() => navigate('catalog')} style={{ cursor:'pointer' }}>
+            Film<span>Vault</span>
+          </a>
+
+          {/* Desktop nav */}
+          <div className="d-none d-md-flex align-items-center gap-1">
+            {links.map(l => (
+              <button key={l.id}
+                className={`nav-link-custom ${currentPage===l.id?'active':''}`}
+                onClick={() => navigate(l.id)}
+                style={{ background:'none', border:'none', cursor:'pointer', position:'relative' }}>
+                {l.label}
+                {l.id==='favorites' && favorites.length > 0 && (
+                  <span style={{ position:'absolute', top:-4, right:-2, background:'#e84b4b', borderRadius:'50%', width:14, height:14, fontSize:'0.6rem', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:700, color:'white' }}>
+                    {favorites.length}
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+
+          {/* Actions */}
+          <div className="d-flex align-items-center gap-2">
+            {user ? (
+              <div className="d-flex align-items-center gap-2">
+                <div style={{ background:'var(--gradient)', borderRadius:'50%', width:34, height:34, display:'flex', alignItems:'center', justifyContent:'center', fontWeight:700, fontSize:'0.85rem', color:'#0a0a0f' }}>
+                  {user[0].toUpperCase()}
+                </div>
+                <span className="d-none d-sm-inline" style={{ fontSize:'0.85rem', color:'var(--text-muted)' }}>{user}</span>
+                <button className="btn-ghost" onClick={logout} style={{ padding:'0.35rem 0.9rem', fontSize:'0.8rem', borderRadius:50 }}>
+                  <i className="bi bi-box-arrow-right"></i>
+                </button>
+              </div>
+            ) : (
+              <button className="btn-nav-login" onClick={() => navigate('login')}>
+                <i className="bi bi-person me-1"></i> Entrar
+              </button>
+            )}
+            {/* Mobile hamburger */}
+            <button className="d-md-none btn-ghost" style={{ padding:'0.4rem 0.7rem', borderRadius:10 }} onClick={() => setMenuOpen(!menuOpen)}>
+              <i className={`bi ${menuOpen?'bi-x':'bi-list'}`}></i>
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile menu */}
+        {menuOpen && (
+          <div className="d-md-none mt-3 pb-2" style={{ borderTop:'1px solid var(--border)', paddingTop:'0.75rem' }}>
+            {links.map(l => (
+              <button key={l.id}
+                className={`nav-link-custom d-flex align-items-center gap-2 w-100 ${currentPage===l.id?'active':''}`}
+                onClick={() => { navigate(l.id); setMenuOpen(false); }}
+                style={{ background:'none', border:'none', cursor:'pointer', textAlign:'left', marginBottom:'0.25rem' }}>
+                <i className={`bi ${l.icon}`}></i> {l.label}
+                {l.id==='favorites' && favorites.length > 0 && (
+                  <span style={{ background:'#e84b4b', borderRadius:50, fontSize:'0.7rem', padding:'0 6px', fontWeight:700, color:'white', marginLeft:'auto' }}>{favorites.length}</span>
+                )}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    </nav>
+  );
+}
+
+// ──────────────────────────────────────────
+// FOOTER
+// ──────────────────────────────────────────
+function Footer({ navigate }) {
+  return (
+    <footer className="footer">
+      <div className="container">
+        <div className="row g-4 mb-4">
+          <div className="col-md-4">
+            <div className="footer-brand mb-2">Film<span style={{ color:'var(--text)' }}>Vault</span></div>
+            <p style={{ color:'var(--text-muted)', fontSize:'0.85rem', lineHeight:1.7 }}>
+              Tu destino para descubrir, valorar y coleccionar las mejores películas del mundo.
+            </p>
+          </div>
+          <div className="col-6 col-md-2">
+            <div style={{ fontWeight:600, fontSize:'0.82rem', color:'var(--accent)', textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:'0.8rem' }}>Navegación</div>
+            {[['catalog','Catálogo'],['favorites','Favoritos']].map(([id,label]) => (
+              <button key={id} onClick={() => navigate(id)} style={{ display:'block', background:'none', border:'none', cursor:'pointer', marginBottom:4 }}>
+                <a className="footer" style={{ color:'var(--text-muted)', fontSize:'0.85rem' }}>{label}</a>
+              </button>
+            ))}
+          </div>
+          <div className="col-6 col-md-2">
+            <div style={{ fontWeight:600, fontSize:'0.82rem', color:'var(--accent)', textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:'0.8rem' }}>Empresa</div>
+            {[['contact','Contacto'],['legal','Aviso Legal']].map(([id,label]) => (
+              <button key={id} onClick={() => navigate(id)} style={{ display:'block', background:'none', border:'none', cursor:'pointer', marginBottom:4 }}>
+                <a className="footer" style={{ color:'var(--text-muted)', fontSize:'0.85rem' }}>{label}</a>
+              </button>
+            ))}
+          </div>
+          <div className="col-md-4">
+            <div style={{ fontWeight:600, fontSize:'0.82rem', color:'var(--accent)', textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:'0.8rem' }}>Newsletter</div>
+            <div style={{ display:'flex', gap:8 }}>
+              <input type="email" placeholder="tu@email.com"
+                style={{ flex:1, background:'rgba(255,255,255,0.04)', border:'1px solid var(--border)', borderRadius:10, padding:'0.5rem 0.8rem', color:'var(--text)', fontFamily:'DM Sans', fontSize:'0.85rem', outline:'none' }} />
+              <button className="btn-gold" style={{ borderRadius:10, padding:'0.5rem 1rem', flexShrink:0 }}>
+                <i className="bi bi-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div style={{ borderTop:'1px solid var(--border)', paddingTop:'1rem', display:'flex', justifyContent:'space-between', flexWrap:'wrap', gap:8 }}>
+          <span style={{ color:'var(--text-muted)', fontSize:'0.8rem' }}>© 2025 FilmVault S.L. Todos los derechos reservados.</span>
+          <div className="d-flex gap-3">
+            {['bi-twitter-x','bi-instagram','bi-youtube'].map(icon => (
+              <i key={icon} className={`bi ${icon}`} style={{ color:'var(--text-muted)', cursor:'pointer', fontSize:'1rem' }}></i>
+            ))}
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+// ──────────────────────────────────────────
+// TOAST CONTAINER
+// ──────────────────────────────────────────
+function ToastContainer() {
+  const { toasts } = useApp();
+  return (
+    <div className="toast-container-custom">
+      {toasts.map(t => (
+        <div key={t.id} className="toast-item">
+          <i className={`bi ${t.icon}`}></i>
+          <span>{t.msg}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ──────────────────────────────────────────
+// APP ROOT
+// ──────────────────────────────────────────
+function App() {
+  const [page, setPage] = useState('catalog');
+
+  const navigate = (p) => {
+    setPage(p);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const renderPage = () => {
+    switch(page) {
+      case 'catalog':   return <CatalogPage />;
+      case 'favorites': return <FavoritesPage navigate={navigate} />;
+      case 'login':     return <AuthPage navigate={navigate} />;
+      case 'contact':   return <ContactPage />;
+      case 'legal':     return <LegalPage />;
+      default:          return <CatalogPage />;
+    }
+  };
+
+  return (
+    <AppProvider>
+      <Navbar currentPage={page} navigate={navigate} />
+      <main style={{ minHeight:'70vh' }}>
+        {renderPage()}
+      </main>
+      <Footer navigate={navigate} />
+      <ToastContainer />
+    </AppProvider>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
 </html>

@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import MovieCard from '../components/movies/MovieCard';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import AuthModal from '../components/auth/AuthModal';
-import { getFavorites, toggleFavorite } from '../../core/application/usecases/movieUseCases';
+import { getFavorites, toggleFavorite } from '../../core/application/usescases/movieUseCases';
 
 const GENRES = ['Todos', 'Drama', 'Crimen', 'Acción', 'Ciencia Ficción', 'Thriller', 'Fantasía', 'Historia', 'Romance', 'Aventura'];
 
@@ -199,4 +199,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;s
+export default HomePage;

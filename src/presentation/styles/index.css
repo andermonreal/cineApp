@@ -1,0 +1,144 @@
+/* ── Imports ─────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+
+/* ── Base ────────────────────────────────────────────────── */
+:root {
+  --bs-body-font-family: 'Inter', system-ui, sans-serif;
+  --bs-primary: #4f6ef7;
+  --bs-primary-rgb: 79, 110, 247;
+  --bs-body-bg: #f8f9fb;
+  --bs-body-color: #1a1d23;
+  --transition-fast: 0.2s ease;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--bs-body-font-family);
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Layout ──────────────────────────────────────────────── */
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+}
+
+/* ── Hero gradient ───────────────────────────────────────── */
+.bg-gradient-hero {
+  background: linear-gradient(135deg, #eef2ff 0%, #f0f9ff 50%, #f7f7ff 100%);
+  border-bottom: 1px solid rgba(79, 110, 247, 0.1);
+}
+
+/* ── Movie card ──────────────────────────────────────────── */
+.movie-card {
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.movie-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 32px rgba(79, 110, 247, 0.15) !important;
+}
+
+.movie-poster {
+  transition: transform 0.35s ease;
+}
+
+.movie-card:hover .movie-poster {
+  transform: scale(1.06);
+}
+
+.movie-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.movie-card:hover .movie-overlay {
+  opacity: 1;
+}
+
+/* ── Navbar ──────────────────────────────────────────────── */
+.navbar {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* ── Forms ───────────────────────────────────────────────── */
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--bs-primary);
+  box-shadow: 0 0 0 0.2rem rgba(79, 110, 247, 0.15);
+}
+
+/* ── Buttons ─────────────────────────────────────────────── */
+.btn-primary {
+  background-color: #4f6ef7;
+  border-color: #4f6ef7;
+}
+
+.btn-primary:hover {
+  background-color: #3a58e8;
+  border-color: #3a58e8;
+}
+
+/* ── Cards ───────────────────────────────────────────────── */
+.card {
+  border-radius: 12px;
+}
+
+/* ── Scrollbar ───────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c5c5c5;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a0a0a0;
+}
+
+/* ── Utilities ───────────────────────────────────────────── */
+.object-fit-cover {
+  object-fit: cover;
+}
+
+/* custom badges */
+.favorite-badge {
+  /* gradient similar to provided snippet */
+  background: linear-gradient(90deg, #ffeef0, #fff0f3, #ffeef0);
+  border-bottom: 1px solid #fecdd3;
+  color: #dc3545; /* red text */
+}
+
+/* Smooth page transitions */
+.container {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

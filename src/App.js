@@ -4,6 +4,7 @@ import { AuthProvider } from './presentation/context/AuthContext';
 import Navbar from './presentation/components/common/Navbar';
 import Footer from './presentation/components/common/Footer';
 import HomePage from './presentation/pages/HomePage';
+import MovieDetailPage from './presentation/pages/MovieDetailPage';
 
 const App = () => (
   <AuthProvider>
@@ -13,6 +14,7 @@ const App = () => (
         <main style={{ flex: 1 }}>
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/movies/:id" element={<MovieDetailPage />} />
           </Routes>
         </main>
         <Footer />
